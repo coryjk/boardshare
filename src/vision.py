@@ -19,8 +19,27 @@ args = vars(ap.parse_args())
 if args["system"] == "win":
 	pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
-# load the example image and convert it to grayscale
+# load the example image 
 image = cv2.imread(args["image"])
+# percent of original image size
+c = None
+limit = 1000
+# check if rescale necessary: h/w = h'/w', w/h = w'/h'
+if image.shape[0] > limit:
+	c = float(image.shape[0]) # original height
+	height = 1000
+	width  = image.shape[1]/c * height
+elif image.shape[1] > limit:
+	c = float(image.shape[1]) # original width
+	width  = 1000
+	height = image.shape[0]/c * width
+# must rescale
+if c:
+	new_dim = (int(width), int(height))
+	image = cv2.resize(image, new_dim, interpolation=cv2.INTER_AREA)
+	print(image.shape)
+	
+# grayscale
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
  
 # check to see if we should apply thresholding to preprocess the
