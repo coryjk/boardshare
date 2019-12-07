@@ -5,13 +5,19 @@ import argparse
 import cv2
 import os
 
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True,
 	help="path to input image to be OCR'd")
 ap.add_argument("-p", "--preprocess", type=str, default="thresh",
 	help="type of preprocessing to be done")
+ap.add_argument("-os", "--system", type=str,
+	help="specify OS if on windows")
 args = vars(ap.parse_args())
+
+if args["system"] == "win":
+	pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
 # load the example image and convert it to grayscale
 image = cv2.imread(args["image"])
@@ -30,7 +36,8 @@ elif args["preprocess"] == "blur":
  
 # write the grayscale image to disk as a temporary file so we can
 # apply OCR to it
-filename = "{}.png".format(os.getpid())
+ospid = os.getpid()
+filename = "cache/{}.png".format(ospid)
 cv2.imwrite(filename, gray)
 
 # load the image as a PIL/Pillow image, apply OCR, and then delete
