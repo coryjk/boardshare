@@ -4,13 +4,14 @@ import pytesseract
 import argparse
 import cv2
 import os
+import crop
 
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True,
 	help="path to input image to be OCR'd")
-ap.add_argument("-p", "--preprocess", type=str, default="thresh",
+ap.add_argument("-p", "--preprocess", type=str,
 	help="type of preprocessing to be done")
 ap.add_argument("-os", "--system", type=str,
 	help="specify OS if on windows")
@@ -37,11 +38,10 @@ elif image.shape[1] > limit:
 if c:
 	new_dim = (int(width), int(height))
 	image = cv2.resize(image, new_dim, interpolation=cv2.INTER_AREA)
-	print(image.shape)
-	
+
 # grayscale
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
- 
+
 # check to see if we should apply thresholding to preprocess the
 # image
 if args["preprocess"] == "thresh":
