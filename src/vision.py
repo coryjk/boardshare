@@ -52,6 +52,10 @@ if args["preprocess"] == "thresh":
 # noise
 elif args["preprocess"] == "blur":
 	gray = cv2.medianBlur(gray, 3)
+
+# contrast
+elif args["preprocess"] == "contrast":
+	gray = 2*gray
  
 # write the grayscale image to disk as a temporary file so we can
 # apply OCR to it
@@ -61,7 +65,7 @@ cv2.imwrite(filename, gray)
 
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
-text = pytesseract.image_to_string(Image.open(filename), config="--psm 11")
+text = pytesseract.image_to_string(Image.open(filename), config="--psm 3")
 os.remove(filename)
 print(text)
  
