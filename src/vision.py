@@ -24,15 +24,15 @@ if args["system"] == "win":
 image = cv2.imread(args["image"])
 # percent of original image size
 c = None
-limit = 1000
+limit = 500
 # check if rescale necessary: h/w = h'/w', w/h = w'/h'
 if image.shape[0] > limit:
 	c = float(image.shape[0]) # original height
-	height = 1000
+	height = limit
 	width  = image.shape[1]/c * height
 elif image.shape[1] > limit:
 	c = float(image.shape[1]) # original width
-	width  = 1000
+	width  = limit
 	height = image.shape[0]/c * width
 # must rescale
 if c:
