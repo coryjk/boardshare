@@ -1,3 +1,5 @@
 pillow
+tesseract
+tesseract-ocr
 pytesseract
 opencv-python
