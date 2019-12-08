@@ -65,11 +65,13 @@ elif args["preprocess"] == "contrast":
 ospid = os.getpid()
 filename = "cache/{}.png".format(ospid)
 cv2.imwrite(filename, gray)
+processed_img = Image.open(filename)
 
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
-text = pytesseract.image_to_string(Image.open(filename), config=config)
-print(pytesseract.image_to_boxes(Image.open(filename), config=config))
+text = pytesseract.image_to_string(processed_img, config=config)
+boxes = pytesseract.image_to_boxes(processed_img, config=config)
+crop.bound_by_symbol(processed_img, boxes)
 os.remove(filename)
 print(text)
  
