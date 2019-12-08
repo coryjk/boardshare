@@ -16,16 +16,23 @@ def format_corners(point):
     return p
 
 # draw rectangles on all target symbols
-def draw_rectangles(img, points, symbol='#'):
+def draw_rectangles(img, points, symbol='#', formatted=False):
     accum_img = pil_to_cv2(img)
     # assume format for points[i]: (x1, y1, x2, y2)
     for p in points:
         # draw rectangles for matched symbols
-        if p[0] == symbol:
-            x1, y1, x2, y2 = format_corners(p)
+        if not formatted:
+            if p[0] == symbol:
+                x1, y1, x2, y2 = format_corners(p)
+                y1 = accum_img.shape[0] - y1
+                y2 = accum_img.shape[0] - y2
+                accum_img = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
+        # in the case points are already formatted
+        else:
+            x1, y1, x2, y2 = p
             y1 = accum_img.shape[0] - y1
             y2 = accum_img.shape[0] - y2
-            accum_img = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
+            accum_image = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
     return accum_img
 
 # crop images using 4 bounding symbols
@@ -47,16 +54,16 @@ def draw_rectangles(img, points, symbol='#'):
 
     a: min(y), b: min(x), c: max(x), d: max(y)
 """
-def bound_by_symbol(img, box_info, symbol='#'):
+def bound_by_symbol(img, box_info, symbol='#', show_boxes=False):
     # parse by new line, isolate symbol of interest
     parsed_info = box_info.split('\n')
     interest_points = [info for info in parsed_info if info[0] == symbol]
     # reality check
     try:
-        assert len(interest_points) == 4
+        assert len(interest_points) >= 4
     except AssertionError:
         print("Error: no bounding box detected--not enough interest points found")
-        return draw_rectangles(img, interest_points, symbol)
+        return draw_rectangles(img, interest_points, symbol=symbol)
     # determine corners from interest points
     p_init = format_corners(interest_points[0])
     a, b, c, d = p_init, p_init, p_init, p_init
@@ -78,4 +85,9 @@ def bound_by_symbol(img, box_info, symbol='#'):
     p4 = (c[0], result.shape[0]-d[1])
     # crop rectangular section
     result = result[p4[1]:p1[1],p1[0]:p4[0]]
+    # optional dispay of selected rectangles
+    if show_boxes:
+        with_rectangles = draw_rectangles(img, [a, b, c, d],
+                                          symbol=symbol, formatted=True)
+        cv2.imshow("Bounding Boxes", with_rectangles)                                        
     return result

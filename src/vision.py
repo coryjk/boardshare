@@ -70,7 +70,7 @@ processed_img = Image.open(filename)
 
 # find interest points
 boxes = pytesseract.image_to_boxes(processed_img, config=config)
-gray = crop.bound_by_symbol(processed_img, boxes, symbol='#')
+gray = crop.bound_by_symbol(processed_img, boxes, symbol='#', show_boxes=True)
 
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
