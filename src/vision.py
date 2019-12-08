@@ -67,11 +67,13 @@ filename = "cache/{}.png".format(ospid)
 cv2.imwrite(filename, gray)
 processed_img = Image.open(filename)
 
+# find interest points
+boxes = pytesseract.image_to_boxes(processed_img, config=config)
+gray = crop.bound_by_symbol(processed_img, boxes, symbol='#')
+
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
-text = pytesseract.image_to_string(processed_img, config=config)
-boxes = pytesseract.image_to_boxes(processed_img, config=config)
-crop.bound_by_symbol(processed_img, boxes)
+text = pytesseract.image_to_string(gray, config=config)
 os.remove(filename)
 print(text)
  
