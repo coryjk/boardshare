@@ -1,3 +1,4 @@
+# referenced tutorial: https://www.pyimagesearch.com/2017/07/10/using-tesseract-ocr-python/
 # import packages
 from PIL import Image
 import pytesseract
@@ -7,7 +8,7 @@ import os
 import crop
 
 whitelist = "-c tessedit_char_whitelist=#abcdefghijklmnopqrstuvwxyz123456789"
-psm    = "--psm 12"
+psm    = "--psm 11"
 config = psm + " " + whitelist
 
 # construct the argument parse and parse the arguments
