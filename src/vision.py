@@ -6,6 +6,9 @@ import cv2
 import os
 import crop
 
+whitelist = "-c tessedit_char_whitelist=#abcdefghijklmnopqrstuvwxyz123456789"
+psm    = "--psm 12"
+config = psm + " " + whitelist
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -65,7 +68,8 @@ cv2.imwrite(filename, gray)
 
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
-text = pytesseract.image_to_string(Image.open(filename), config="--psm 3")
+text = pytesseract.image_to_string(Image.open(filename), config=config)
+print(pytesseract.image_to_boxes(Image.open(filename), config=config))
 os.remove(filename)
 print(text)
  
