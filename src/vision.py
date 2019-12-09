@@ -75,8 +75,8 @@ gray = crop.bound_by_symbol(processed_img, boxes, symbol='#', show_boxes=True)
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
 text = pytesseract.image_to_string(gray, config=config)
-cropped_boxes = pytesseract.image_to_boxes(gray, config=config)
-crop.detect_computing_ids(gray, cropped_boxes)
+cropped_data = pytesseract.image_to_data(gray, config=config, output_type=pytesseract.Output.DICT)
+crop.detect_computing_ids(gray, cropped_data)
 os.remove(filename)
 print(text)
  

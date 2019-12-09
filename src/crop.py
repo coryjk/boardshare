@@ -10,29 +10,30 @@ def pil_to_cv2(img):
 # format corner points:
 #   "S x1 y1 x2 y2" --> [x1, y1, x2, y2]
 def format_corners(point):
-    print(point)
     p = point.split(' ')
     p = p[1:len(p)-1]
     p = p if type(p[0]) is int else [int(p_i) for p_i in p]
     return p
 
 # draw rectangles on all target symbols
-def draw_rectangles(img, points, symbol=None, formatted=False):
-    accum_img = pil_to_cv2(img) if type(img) is not np.ndarray else img
+def draw_rectangles(img, points, symbol=None, formatted=False, offset=True):
+    accum_img = pil_to_cv2(img) if type(img) is not np.ndarray else img.copy()
     # assume format for points[i]: (x1, y1, x2, y2)
     for p in points:
         # draw rectangles for matched symbols
         if not formatted:
             if p[0] == symbol or symbol is None:
                 x1, y1, x2, y2 = format_corners(p)
-                y1 = accum_img.shape[0] - y1
-                y2 = accum_img.shape[0] - y2
+                if offset:
+                    y1 = accum_img.shape[0] - y1
+                    y2 = accum_img.shape[0] - y2
                 accum_img = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
         # in the case points are already formatted
         else:
             x1, y1, x2, y2 = p
-            y1 = accum_img.shape[0] - y1
-            y2 = accum_img.shape[0] - y2
+            if offset:
+                y1 = accum_img.shape[0] - y1
+                y2 = accum_img.shape[0] - y2
             accum_image = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
     return accum_img
 
@@ -99,22 +100,34 @@ def bound_by_symbol(img, box_info, symbol='#', show_boxes=False):
 # in english: 2 or 3 letters followed by 1 digit, followed by 2 more letters
 """
     find all-encompassing box given set of boxes
-        along roughly the same horizontal axis:
-        
+        along roughly the same horizontal axis...
+
+    given a set of bounding boxes:
+
                 o--o     o---------o-o--o
     o---o o---o |  |     |---o o---o |  |
-    |   | |   | |  | --> |   | |   | |  |
+    |   | |   | |  | --> | 1 | | 2 | |3 |
     o---o |   | o--o     |---o |   | o--|
           o---o          o-----o---o----o
 """
-def detect_computing_ids(img, box_info):
-    parsed_info = box_info.split('\n')
-    info = []
-    for p in parsed_info:
-        info.append(p)
-    accum = draw_rectangles(img,info)
-    cv2.imshow("test",accum)
-    print(parsed_info)
+def detect_computing_ids(img, box_data):
+    assert type(box_data) == dict, "Error: incorrect input type for param \'box_data\'"
+    # verify type
+    img_cv2 = pil_to_cv2(img) if type(img) is not np.ndarray else img.copy()
+    
+    # grab relevant indices
+    indices = [i for i in range(len(box_data["text"])) 
+               if len(box_data["text"][i]) == 5 or len(box_data["text"][i]) == 6]
+    
+    # boxes 
+    cropped_imgs = []
+    for i in indices:
+        x, y, w, h = box_data["left"][i], box_data["top"][i], box_data["width"][i], box_data["height"][i]
+        crop = img_cv2[y:y+h,x:x+w].copy()
+        cropped_imgs.append(crop)
+
+    
+
     # case 1: id = [a-z]{2}[1-9]{1}[a-z]{2}, |id| = 5
 
     # case 2: id = [a-z]{3}[1-9]{1}[a-z]{2}, |id| = 6
