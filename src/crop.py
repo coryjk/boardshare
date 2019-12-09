@@ -97,6 +97,16 @@ def bound_by_symbol(img, box_info, symbol='#', show_boxes=False):
 # uses criteria of UVA computing id format to aid detection
 # --> ([a-z]{2} | [a-z]{3})[1-9]{1}[a-z]{2}
 # in english: 2 or 3 letters followed by 1 digit, followed by 2 more letters
+"""
+    find all-encompassing box given set of boxes
+        along roughly the same horizontal axis:
+        
+                o--o     o---------o-o--o
+    o---o o---o |  |     |---o o---o |  |
+    |   | |   | |  | --> |   | |   | |  |
+    o---o |   | o--o     |---o |   | o--|
+          o---o          o-----o---o----o
+"""
 def detect_computing_ids(img, box_info):
     parsed_info = box_info.split('\n')
     info = []
