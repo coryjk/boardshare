@@ -102,8 +102,7 @@ def bound_by_symbol(img, box_info, symbol='#', show_boxes=False):
     find all-encompassing box given set of boxes
         along roughly the same horizontal axis...
 
-    given a set of bounding boxes:
-
+    provided by pytesseract.images_to_data:
                 o--o     o---------o-o--o
     o---o o---o |  |     |---o o---o |  |
     |   | |   | |  | --> | 1 | | 2 | |3 |
@@ -114,7 +113,7 @@ def detect_computing_ids(img, box_data):
     assert type(box_data) == dict, "Error: incorrect input type for param \'box_data\'"
     # verify type
     img_cv2 = pil_to_cv2(img) if type(img) is not np.ndarray else img.copy()
-    
+
     # grab relevant indices
     indices = [i for i in range(len(box_data["text"])) 
                if len(box_data["text"][i]) == 5 or len(box_data["text"][i]) == 6]
@@ -126,7 +125,7 @@ def detect_computing_ids(img, box_data):
         crop = img_cv2[y:y+h,x:x+w].copy()
         cropped_imgs.append(crop)
 
-    
+    # TODO
 
     # case 1: id = [a-z]{2}[1-9]{1}[a-z]{2}, |id| = 5
 

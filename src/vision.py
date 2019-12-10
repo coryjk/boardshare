@@ -6,6 +6,7 @@ import argparse
 import cv2
 import os
 import crop
+import re
 
 whitelist = "-c tessedit_char_whitelist=#abcdefghijklmnopqrstuvwxyz123456789"
 psm    = "--psm 11"
@@ -75,10 +76,17 @@ gray = crop.bound_by_symbol(processed_img, boxes, symbol='#', show_boxes=True)
 # load the image as a PIL/Pillow image, apply OCR, and then delete
 # the temporary file
 text = pytesseract.image_to_string(gray, config=config)
-cropped_data = pytesseract.image_to_data(gray, config=config, output_type=pytesseract.Output.DICT)
-crop.detect_computing_ids(gray, cropped_data)
 os.remove(filename)
-print(text)
+
+# cropped_data = pytesseract.image_to_data(gray, config=config, output_type=pytesseract.Output.DICT)
+# crop.detect_computing_ids(gray, cropped_data)
+
+# filter out invalid ids
+id_regex = r'([a-z]{2}|[a-z]{3})[1-9][a-z]{2}'
+suffix   = "@virginia.edu"
+ids = [s+suffix for s in text.split('\n') 
+	   if re.match(id_regex,s) and (5 <= len(s) <= 6)]
+print(ids)
  
 # show the output images
 cv2.imshow("Output", gray)
