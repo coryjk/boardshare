@@ -28,7 +28,7 @@ def detect_document(uri):
     # finds unique UVA computing ids from blocks of detected text
     # 2 or 3 letters followed by 1 digit, followed by 2 more letters
     full_text = "".join(full_text)
-    ids = re.findall("[a-zA-Z]{2,3}[0-9][a-zA-Z]{2}", full_text)
+    ids = re.findall("[a-z]{2,3}[1-9][a-z]{2}", full_text)
     print(full_text)
     print(ids)
                     #for symbol in word.symbols:
