@@ -90,14 +90,17 @@ ids = [s+suffix for s in text.split('\n')
 print(ids)
  
 pts = []
-# draw relevant ids on ROI
-for i in range(len(data["text"])):
-	id = data["text"][i]
-	if re.match(id_regex, id):
-		x, y, w, h = data["left"][i], data["top"][i], data["width"][i], data["height"][i]
-		pts.append([x, y, x+w, y+h])
-# draw
-gray = crop.draw_rectangles(gray, pts, formatted=True, offset=False)
+# # draw relevant ids on ROI
+# for i in range(len(data["text"])):
+# 	id = data["text"][i]
+# 	if re.match(id_regex, id):
+# 		x, y, w, h = data["left"][i], data["top"][i], data["width"][i], data["height"][i]
+# 		pts.append([x, y, x+w, y+h])
+# 		# print confidences
+# 		print(id, '\t', data["conf"][i])
+
+# # draw
+# gray = crop.draw_rectangles(gray, pts, formatted=True, offset=False)
 
 # show the output images
 cv2.imshow("Output", gray)

@@ -27,14 +27,14 @@ def draw_rectangles(img, points, symbol=None, formatted=False, offset=True):
                 if offset:
                     y1 = accum_img.shape[0] - y1
                     y2 = accum_img.shape[0] - y2
-                accum_img = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
+                accum_img = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (0,0,255), 3)
         # in the case points are already formatted
         else:
             x1, y1, x2, y2 = p
             if offset:
                 y1 = accum_img.shape[0] - y1
                 y2 = accum_img.shape[0] - y2
-            accum_image = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (255,0,0), 1)
+            accum_image = cv2.rectangle(accum_img, (x1, y1), (x2, y2), (0,0,255), 3)
     return accum_img
 
 # crop images using 4 bounding symbols
